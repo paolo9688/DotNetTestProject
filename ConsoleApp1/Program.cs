@@ -11,6 +11,8 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            const string parolaChiave = "marioo";
+
             // creo una nuova lista di utenti:
             List<Utente_Type> utenti = new List<Utente_Type>
             {
@@ -34,13 +36,23 @@ namespace ConsoleApp1
                 Console.WriteLine(utente.ToString());
             }
 
-            // controllo se la parola chiave è presente in uno degli utenti:
+            // controllo se la parola chiave è presente in uno degli utenti ciclando su tutta la lista utenti:
             foreach (Utente_Type utente in utenti)
             {
-                utente.CheckUtente("passWorD");
+                if (utente.CheckUtente(parolaChiave))
+                {
+                    Console.WriteLine($"\nLa parola '{parolaChiave}' soddisfa i criteri di ricerca per l'utente {utente.Nome} {utente.Cognome}.");
+                }
             }
 
-            utenti.CheckUtenti("passWorD");
+            // controllo se la parola chiave è presente in uno degli utenti richiamando l'apposito metodo:
+            if (utenti.CheckUtenti(parolaChiave))
+            {
+                Console.WriteLine($"\nLa parola '{parolaChiave}' soddisfa i criteri di ricerca per la lista di utenti");
+            } else
+            {
+                Console.WriteLine("\nNessun utente soddisfa i criteri di ricerca.");
+            }
         }
     }
 }
