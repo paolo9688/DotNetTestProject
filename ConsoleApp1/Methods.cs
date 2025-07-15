@@ -12,8 +12,7 @@ namespace ConsoleApp1
         {
             if (string.IsNullOrWhiteSpace(parolaChiave))
             {
-                Console.WriteLine("\nLa parola inserita non è valida.");
-                return;
+                throw new ArgumentNullException("Attenzione: la parola inserita ha valore null", parolaChiave);
             }
 
             string chiave = parolaChiave.ToLower();
@@ -37,8 +36,7 @@ namespace ConsoleApp1
         {
             if (string.IsNullOrWhiteSpace(parolaChiave))
             {
-                Console.WriteLine("\nLa parola inserita non è valida.");
-                return;
+                throw new ArgumentNullException("Attenzione: la parola inserita ha valore null", parolaChiave);
             }
 
             string chiave = parolaChiave.ToLower();
