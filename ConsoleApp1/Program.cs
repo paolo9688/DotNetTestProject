@@ -11,7 +11,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            const string parolaChiave = "marioo";
+            const string parolaChiave = "mario";
 
             // creo una nuova lista di utenti:
             List<Utente_Type> utenti = new List<Utente_Type>
@@ -48,7 +48,7 @@ namespace ConsoleApp1
             // controllo se la parola chiave è presente in uno degli utenti richiamando l'apposito metodo:
             if (utenti.CheckUtenti(parolaChiave))
             {
-                Console.WriteLine($"\nLa parola '{parolaChiave}' soddisfa i criteri di ricerca per la lista di utenti");
+                Console.WriteLine($"\nLa parola '{parolaChiave}' soddisfa i criteri di ricerca per la lista di utenti.");
             } else
             {
                 Console.WriteLine("\nNessun utente soddisfa i criteri di ricerca.");
