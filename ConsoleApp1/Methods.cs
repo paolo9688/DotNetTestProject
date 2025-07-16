@@ -64,65 +64,46 @@ namespace ConsoleApp1
 
         public static T ToReal<T>(this T value)
         {
-            // Tipo valore non null:
+            var type = typeof(T);
+            var underlyingType = Nullable.GetUnderlyingType(type);
+
+            if (underlyingType != null)
+            {
+                // T è Nullable<U>
+                if (value == null)
+                {
+                    var defaultValue = Activator.CreateInstance(underlyingType);
+                    return (T)Activator.CreateInstance(type, defaultValue);
+                }
+                else
+                {
+                    return value;
+                }
+            }
+
             if (value != null)
             {
                 return value;
             }
 
-            // Tipo valore null e T è stringa:
-            if (typeof(T) == typeof(string))
+            if (type == typeof(string))
             {
                 return (T)(object)"";
             }
 
-            // Tipo valore null e T è valore:
-            if (typeof(T).IsValueType)
+            if (type.IsValueType)
             {
-                return (T)Activator.CreateInstance(typeof(T));
+                return (T)Activator.CreateInstance(type);
             }
 
-            // Tipo riferimento non stringa:
             try
             {
-                // Prova a creare un'istanza usando costruttore senza parametri
                 return Activator.CreateInstance<T>();
             }
             catch
             {
-                // Se non si può creare, torna default (null)
                 return default;
             }
         }
-
-        //public static T ToReal<T>(this Nullable<T> value) where T : struct
-        //{
-        //    return value.HasValue ? value.Value : default(T);
-        //}
-
-        //public static T ToReal<T>(this T value) where T : class, new()
-        //{
-        // return value != null ? value : new T();
-        //}
-
-        //public static string ToReal(this string value)
-        //{
-        //    return value != null ? value : "";
-        //}
-
-        //public static string ToReal(this string value)
-        //{
-        // return value != null ? value : "";
-        //}
-
-        //public static bool ToReal(this Nullable<bool> value)
-        //{
-        // return value.HasValue ? value.Value : false;
-        //}
-
-        //public static int ToReal(this Nullable<int> value)
-        //{
-        // return value.HasValue ? value.Value : 0;
-        //}
     }
 }
