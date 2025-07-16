@@ -64,6 +64,12 @@ namespace ConsoleApp1
 
         public static T ToReal<T>(this T value)
         {
+            // Caso: valore non null, restituisci valore così com'è
+            if (value != null)
+            {
+                return value;
+            }
+
             // Ottieni il tipo generico T al runtime
             var type = typeof(T);
 
@@ -84,12 +90,6 @@ namespace ConsoleApp1
                     // Se non è null, restituisci il valore originale
                     return value;
                 }
-            }
-
-            // Caso: valore non null, restituisci valore così com'è
-            if (value != null)
-            {
-                return value;
             }
 
             // Caso: tipo stringa, se null restituisci stringa vuota
