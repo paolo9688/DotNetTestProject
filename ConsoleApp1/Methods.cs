@@ -61,5 +61,40 @@ namespace ConsoleApp1
 
             return false;
         }
+
+        //public static T ToReal<T>(this Nullable<T> value) where T : struct
+        //{
+        //    return value.HasValue ? value.Value : default(T);
+        //}
+
+        public static T ToReal<T>(this T value)
+        {
+            return value != null ? value : typeof(T) == typeof(string) ? (T)(object)"" : (T)(typeof(T).IsValueType ? Activator.CreateInstance(typeof(T)) : null);
+        }
+
+        //public static T ToReal<T>(this T value) where T : class, new()
+        //{
+        // return value != null ? value : new T();
+        //}
+
+        //public static string ToReal(this string value)
+        //{
+        //    return value != null ? value : "";
+        //}
+
+        //public static string ToReal(this string value)
+        //{
+        // return value != null ? value : "";
+        //}
+
+        //public static bool ToReal(this Nullable<bool> value)
+        //{
+        // return value.HasValue ? value.Value : false;
+        //}
+
+        //public static int ToReal(this Nullable<int> value)
+        //{
+        // return value.HasValue ? value.Value : 0;
+        //}
     }
 }

@@ -11,7 +11,11 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            const string parolaChiave = "mario";
+            const string parolaChiave = "";
+            const int numero = 0;
+            const bool flag = false;
+
+            Console.WriteLine(flag.ToReal());
 
             // creo una nuova lista di utenti:
             List<Utente_Type> utenti = new List<Utente_Type>
