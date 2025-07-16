@@ -64,22 +64,35 @@ namespace ConsoleApp1
 
         public static T ToReal<T>(this T value)
         {
+            // Tipo valore non null:
             if (value != null)
             {
                 return value;
             }
 
+            // Tipo valore null e T è stringa:
             if (typeof(T) == typeof(string))
             {
                 return (T)(object)"";
             }
 
+            // Tipo valore null e T è valore:
             if (typeof(T).IsValueType)
             {
                 return (T)Activator.CreateInstance(typeof(T));
             }
 
-            return default;
+            // Tipo riferimento non stringa:
+            try
+            {
+                // Prova a creare un'istanza usando costruttore senza parametri
+                return Activator.CreateInstance<T>();
+            }
+            catch
+            {
+                // Se non si può creare, torna default (null)
+                return default;
+            }
         }
 
         //public static T ToReal<T>(this Nullable<T> value) where T : struct
