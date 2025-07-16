@@ -62,15 +62,30 @@ namespace ConsoleApp1
             return false;
         }
 
+        public static T ToReal<T>(this T value)
+        {
+            if (value != null)
+            {
+                return value;
+            }
+
+            if (typeof(T) == typeof(string))
+            {
+                return (T)(object)"";
+            }
+
+            if (typeof(T).IsValueType)
+            {
+                return (T)Activator.CreateInstance(typeof(T));
+            }
+
+            return default;
+        }
+
         //public static T ToReal<T>(this Nullable<T> value) where T : struct
         //{
         //    return value.HasValue ? value.Value : default(T);
         //}
-
-        public static T ToReal<T>(this T value)
-        {
-            return value != null ? value : typeof(T) == typeof(string) ? (T)(object)"" : (T)(typeof(T).IsValueType ? Activator.CreateInstance(typeof(T)) : null);
-        }
 
         //public static T ToReal<T>(this T value) where T : class, new()
         //{
