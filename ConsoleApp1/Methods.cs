@@ -64,12 +64,16 @@ namespace ConsoleApp1
 
         public static T ToReal<T>(this T value)
         {
+            // Ottieni il tipo generico T al runtime
             var type = typeof(T);
+
+            // Se T è un tipo Nullable<U>, underlyingType sarà il tipo U; altrimenti null
             var underlyingType = Nullable.GetUnderlyingType(type);
 
+            // Caso: T è Nullable<U>
             if (underlyingType != null)
             {
-                // T è Nullable<U>
+                // Se il valore è null, restituisci l'istanza di default di U avvolta in Nullable<U>
                 if (value == null)
                 {
                     var defaultValue = Activator.CreateInstance(underlyingType);
@@ -77,33 +81,58 @@ namespace ConsoleApp1
                 }
                 else
                 {
+                    // Se non è null, restituisci il valore originale
                     return value;
                 }
             }
 
+            // Caso: valore non null, restituisci valore così com'è
             if (value != null)
             {
                 return value;
             }
 
+            // Caso: tipo stringa, se null restituisci stringa vuota
             if (type == typeof(string))
             {
                 return (T)(object)"";
             }
 
+            // Caso: tipo valore non nullable (struct, int, bool, ecc.)
+            // restituisci valore di default (es. 0, false, struct vuota)
             if (type.IsValueType)
             {
                 return (T)Activator.CreateInstance(type);
             }
 
-            try
+            // Caso: tipo array
+            // restituisci un array vuoto dello stesso tipo di elemento
+            if (type.IsArray)
             {
-                return Activator.CreateInstance<T>();
+                var elementType = type.GetElementType();
+                var emptyArray = Array.CreateInstance(elementType, 0);
+                return (T)(object)emptyArray;
             }
-            catch
+
+            // Caso: tipo classe (reference type)
+            if (type.IsClass)
             {
-                return default;
+                // Verifica se esiste un costruttore pubblico senza parametri
+                var ctor = type.GetConstructor(Type.EmptyTypes);
+                if (ctor != null)
+                {
+                    // Se sì, crea e restituisci una nuova istanza
+                    return (T)Activator.CreateInstance(type);
+                }
+                else
+                {
+                    // Altrimenti, lancia eccezione esplicita
+                    throw new InvalidOperationException($"Il tipo {type.FullName} non ha un costruttore pubblico senza parametri.");
+                }
             }
+
+            // Fallback: restituisci default (per sicurezza, anche se non dovrebbe mai arrivarci)
+            return default;
         }
     }
 }

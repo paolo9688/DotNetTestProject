@@ -7,19 +7,75 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    internal class Program
+    class MyClassWithDefaultCtor
+    {
+        public int Number = 42;
+    }
+
+    class MyClassWithoutDefaultCtor
+    {
+        public MyClassWithoutDefaultCtor(int x) { }
+    }
+
+    public class Program
     {
         static void Main(string[] args)
         {
-            const string parolaChiave = "sara";
-            const int numero = 0;
-            const bool flag = false;
+            // string null → ""
+            string sNull = null;
+            Console.WriteLine($"string null -> '{sNull.ToReal()}'");
 
-            int? numerino = null;
-            Console.WriteLine(numerino.ToReal());
-            int? numerino2 = 5;
-            Console.WriteLine(numerino2.ToReal()); // Stampa 5
-            //Console.ReadLine();
+            // string non null → stessa stringa
+            string sVal = "hello";
+            Console.WriteLine($"string 'hello' -> '{sVal.ToReal()}'");
+
+            // int? null → 0
+            int? intNull = null;
+            Console.WriteLine($"int? null → {intNull.ToReal()}");
+
+            // int? con valore
+            int? intVal = 10;
+            Console.WriteLine($"int? 10 → {intVal.ToReal()}");
+
+            // int (non nullable) valore di default (non entra nel metodo, ma testiamo)
+            int intValNonNull = 5;
+            Console.WriteLine($"int 5 → {intValNonNull.ToReal()}");
+
+            // bool? null → false
+            bool? boolNull = null;
+            Console.WriteLine($"bool? null → {boolNull.ToReal()}");
+
+            // bool? true
+            bool? boolTrue = true;
+            Console.WriteLine($"bool? true → {boolTrue.ToReal()}");
+
+            // bool non nullable false
+            bool boolFalse = false;
+            Console.WriteLine($"bool false → {boolFalse.ToReal()}");
+
+            // Tipo di riferimento null → ritorna null
+            object objNull = null;
+            Console.WriteLine($"object null → {(objNull.ToReal() == null ? "null" : "not null")}");
+
+            // Tipo di riferimento non null → stesso oggetto
+            object objVal = new object();
+            Console.WriteLine($"object non null → {(objVal.ToReal() == objVal ? "same instance" : "different instance")}");
+
+            // Classe con default ctor null → ritorna null (con metodo modificato)
+            MyClassWithDefaultCtor myNull = null;
+            var myRes = myNull.ToReal();
+            Console.WriteLine($"MyClassWithDefaultCtor null → {(myRes == null ? "null" : "not null")}");
+
+            // Classe con default ctor istanza nuova (creazione manuale)
+            var myInst = new MyClassWithDefaultCtor();
+            Console.WriteLine($"MyClassWithDefaultCtor instance Number: {myInst.Number}");
+
+            // Classe senza default ctor null → ritorna null
+            MyClassWithoutDefaultCtor myNoCtor = null;
+            var myNoCtorRes = myNoCtor.ToReal();
+            Console.WriteLine($"MyClassWithoutDefaultCtor null → {(myNoCtorRes == null ? "null" : "not null")}");
+
+            const string parolaChiave = "sara";
 
             // creo una nuova lista di utenti:
             List<Utente_Type> utenti = new List<Utente_Type>
