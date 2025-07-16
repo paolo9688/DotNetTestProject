@@ -31,51 +31,68 @@ namespace ConsoleApp1
 
             // int? null → 0
             int? intNull = null;
-            Console.WriteLine($"int? null → {intNull.ToReal()}");
+            Console.WriteLine($"int? null -> {intNull.ToReal()}");
 
             // int? con valore
             int? intVal = 10;
-            Console.WriteLine($"int? 10 → {intVal.ToReal()}");
+            Console.WriteLine($"int? 10 -> {intVal.ToReal()}");
 
             // int (non nullable) valore di default (non entra nel metodo, ma testiamo)
             int intValNonNull = 5;
-            Console.WriteLine($"int 5 → {intValNonNull.ToReal()}");
+            Console.WriteLine($"int 5 -> {intValNonNull.ToReal()}");
 
             // bool? null → false
             bool? boolNull = null;
-            Console.WriteLine($"bool? null → {boolNull.ToReal()}");
+            Console.WriteLine($"bool? null -> {boolNull.ToReal()}");
 
             // bool? true
             bool? boolTrue = true;
-            Console.WriteLine($"bool? true → {boolTrue.ToReal()}");
+            Console.WriteLine($"bool? true -> {boolTrue.ToReal()}");
 
             // bool non nullable false
             bool boolFalse = false;
-            Console.WriteLine($"bool false → {boolFalse.ToReal()}");
+            Console.WriteLine($"bool false -> {boolFalse.ToReal()}");
 
             // Tipo di riferimento null → ritorna null
             object objNull = null;
-            Console.WriteLine($"object null → {(objNull.ToReal() == null ? "null" : "not null")}");
+            Console.WriteLine($"object null -> {(objNull.ToReal() == null ? "null" : "not null")}");
 
             // Tipo di riferimento non null → stesso oggetto
             object objVal = new object();
-            Console.WriteLine($"object non null → {(objVal.ToReal() == objVal ? "same instance" : "different instance")}");
+            Console.WriteLine($"object new instance -> {(objVal.ToReal() == objVal ? "this instance" : "different instance")}");
 
-            // Classe con default ctor null → ritorna null (con metodo modificato)
+            // Classe con costruttore default null → ritorna not null
             MyClassWithDefaultCtor myNull = null;
             var myRes = myNull.ToReal();
-            Console.WriteLine($"MyClassWithDefaultCtor null → {(myRes == null ? "null" : "not null")}");
+            Console.WriteLine($"class with default constructor: null -> {(myRes == null ? "null" : "not null")}");
 
-            // Classe con default ctor istanza nuova (creazione manuale)
+            // Classe con costruttore default istanza nuova (creazione manuale)
             var myInst = new MyClassWithDefaultCtor();
-            Console.WriteLine($"MyClassWithDefaultCtor instance Number: {myInst.Number}");
+            Console.WriteLine($"class with default constructor: instance number: {myInst.Number}");
 
-            // Classe senza default ctor null → ritorna null
+            // Classe senza costruttore default null → lancia un'eccezione (con metodo modificato)
             MyClassWithoutDefaultCtor myNoCtor = null;
-            var myNoCtorRes = myNoCtor.ToReal();
-            Console.WriteLine($"MyClassWithoutDefaultCtor null → {(myNoCtorRes == null ? "null" : "not null")}");
+            try
+            {
+                var myNoCtorRes = myNoCtor.ToReal();
+                Console.WriteLine($"class without default constructor: null -> {(myNoCtorRes == null ? "null" : "not null")}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"class without default constructor: null -> Exception: {ex.Message}");
+            }
 
-            const string parolaChiave = "sara";
+            // Array null → restituisce array vuoto
+            int[] arrayNull = null;
+            var arrayRes = arrayNull.ToReal();
+            Console.WriteLine($"int[] null -> Length: {arrayRes.Length}");
+
+            // Array non null → restituisce stesso array
+            int[] arrayVal = new int[] { 1, 2, 3 };
+            var arrayValRes = arrayVal.ToReal();
+            Console.WriteLine($"int[] non null -> Same instance: {ReferenceEquals(arrayVal, arrayValRes)}");
+
+            /*const string parolaChiave = "alberto";
 
             // creo una nuova lista di utenti:
             List<Utente_Type> utenti = new List<Utente_Type>
@@ -116,7 +133,7 @@ namespace ConsoleApp1
             } else
             {
                 Console.WriteLine("\nNessun utente soddisfa i criteri di ricerca.");
-            }
+            }*/
         }
     }
 }
