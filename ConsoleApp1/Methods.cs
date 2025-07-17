@@ -64,26 +64,38 @@ namespace ConsoleApp1
 
         public static T ToReal<T>(this T value)
         {
-            // Caso: valore non null, restituisci valore così com'è
+            // Caso: valore non null, restituisci il valore così com'è
             if (value != null)
             {
                 return value;
             }
+            // Metto questo check per primo, che sia un tipo nullable o no,
+            // se il valore non è null mi viene restituito subito il valore stesso.
+            // Questo mi evita di fare controlli inutili.
 
             // Ottieni il tipo generico T al runtime
             var type = typeof(T);
+            // Usa l'operatore typeof per ottenere l'oggetto Type
+            // che rappresenta il tipo generico T al momento della compilazione.
 
             // Se T è un tipo Nullable<U>, underlyingType sarà il tipo U; altrimenti null
             var underlyingType = Nullable.GetUnderlyingType(type);
+            // Ottieni il tipo sottostante di T se è un Nullable<T>
 
             // Caso: T è Nullable<U>
             if (underlyingType != null)
+            //serve a verificare se il tipo generico T è un tipo nullable,
+            //ovvero una struttura nullable come int?, bool?, DateTime?, ecc.
             {
                 // Se il valore è null, restituisci l'istanza di default di U avvolta in Nullable<U>
                 if (value == null)
                 {
                     var defaultValue = Activator.CreateInstance(underlyingType);
+                    // Crea un'istanza del tipo sottostante U con il costruttore di default
                     return (T)Activator.CreateInstance(type, defaultValue);
+                    //Crea una nuova istanza di Nullable<U>(cioè di type che è Nullable< U >)
+                    //passando defaultValue come valore contenuto, e la restituisce.
+                    //Quindi restituisce un Nullable che contiene il valore di default di U.
                 }
                 else
                 {
