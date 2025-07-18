@@ -156,14 +156,14 @@ MyClassWithoutDefaultCtor resultMyClass = myClass.ToReal();
 // Il tipo MyClassWithoutDefaultCtor non ha un costruttore pubblico senza parametri.
 ```
 
-# 4. Vantaggi
+## Vantaggi
 
 - Elimina il bisogno di controlli espliciti per `null` in molte situazioni
 - Aiuta a evitare `NullReferenceException`
 - Ottimo per inizializzazioni o fallback sicuri
 - Utile in scenari di deserializzazione, conversione dati o inizializzazione automatica
 
-# 5. Comportamento Interno
+## Comportamento Interno
 
 Il metodo segue questo ordine logico:
 
@@ -175,7 +175,7 @@ Il metodo segue questo ordine logico:
 - Se `T` è una classe con costruttore pubblico senza parametri, restituisce una nuova istanza.
 - In mancanza di alternative, restituisce `default(T)` (fallback di sicurezza).
 
-# 6. Eccezioni
+## Eccezioni
 
 `InvalidOperationException`
 
