@@ -2,13 +2,13 @@
 
 ## Descrizione
 
-`ToReal<T>()` è un metodo di estensione generico per oggetti in C# che assicura che un valore non sia `null` restituendo una sua versione "reale" o predefinita. In pratica, converte un valore `null` in un valore sensato per il tipo specificato:
+`ToReal<T>()` è un metodo di estensione generico per oggetti in C# che assicura che un valore non sia `null`, restituendo una sua versione "reale" o predefinita. In pratica, converte un valore `null` in un valore sensato per il tipo specificato:
 
-- Per i tipi *value* (es. `int`, `bool`) restituisce il valore di default (`0`, `false`, ecc.)
-- Per i tipi *nullable* (es. `int?`, `bool?`) restituisce un'istanza di `Nullable<T>` contenente il valore di default del tipo sottostante
-- Per le stringhe (`string`) restituisce una stringa vuota `""`
-- Per gli array (`T[]`) restituisce un array vuoto dello stesso tipo
-- Per le classi (*reference types*) crea una nuova istanza se è disponibile un costruttore pubblico senza parametri
+- Per i tipi *value* (es. `int`, `bool`), se non null restituisce il valore effettivo, altrimenti restituisce il valore di default (`0`, `false`, ecc.)
+- Per i tipi *nullable* (es. `int?`, `bool?`), se non null restituisce il valore effettivo, altrimenti restituisce un'istanza di `Nullable<T>` contenente il valore di default del tipo sottostante
+- Per le stringhe (`string`), se non null restituisce il valore effettivo, altrimenti restituisce una stringa vuota `""`
+- Per gli array (`T[]`), se non null restituisce l'array attuale, altrimenti restituisce un array vuoto dello stesso tipo
+- Per le classi (*reference types*) crea una nuova istanza se è disponibile un costruttore pubblico senza parametri, altrimenti lancia un'eccezione
 
 ## Firma
 
@@ -22,40 +22,56 @@ public static T ToReal<T>(this T value)
 
 ```csharp
 int? numero = null;
-int? realeNumero = numero.ToReal(); // risultato: 0
+int realeNumero = numero.ToReal(); // risultato: 0
 
 string testo = null;
 string realeStringa = testo.ToReal(); // risultato: ""
 
-bool flag = default;
+bool? flag = null;
 bool flagReale = flag.ToReal(); // risultato: false
 
 DateTime? data = null;
-DateTime? dataReale = data.ToReal(); // risultato: DateTime.MinValue
+DateTime dataReale = data.ToReal(); // risultato: DateTime.MinValue
 
 int[] numeri = null;
 int[] arrayReale = numeri.ToReal(); // risultato: array vuoto di int
 ```
 
-# 3. Esempi di utilizzo
+### Risultati dei relativi test
 
-### Tipi primitivi, nullable, stringhe e array
-
-```csharp
-int? numero = null;
-int? realeNumero = numero.ToReal(); // risultato: 0
-
-string testo = null;
-string realeStringa = testo.ToReal(); // risultato: ""
-
-bool flag = default;
-bool flagReale = flag.ToReal(); // risultato: false
-
-DateTime? data = null;
-DateTime? dataReale = data.ToReal(); // risultato: DateTime.MinValue
-
-int[] numeri = null;
-int[] arrayReale = numeri.ToReal(); // risultato: array vuoto di int
+```json
+[
+    {
+        "TestName": "ToReal_NullableIntNull_ReturnsZero",
+        "Input": null,
+        "Output": 0,
+        "OutputJson": "0"
+    },
+    {
+        "TestName": "ToReal_StringNull_ReturnsEmptyString",
+        "Input": null,
+        "Output": "",
+        "OutputJson": "\"\""
+    },
+    {
+        "TestName": "ToReal_NullableBoolNull_ReturnsFalse",
+        "Input": null,
+        "Output": false,
+        "OutputJson": "false"
+    },
+    {
+        "TestName": "ToReal_NullableDateTimeNull_ReturnsDateTimeMinValue",
+        "Input": null,
+        "Output": "0001-01-01T00:00:00",
+        "OutputJson": "\"0001-01-01T00:00:00\""
+    },
+    {
+        "TestName": "ToReal_IntArrayNull_ReturnsEmptyArray",
+        "Input": null,
+        "OutputLength": 0,
+        "OutputJson": "[]"
+    }
+]
 ```
 
 ### Classi con costruttore pubblico senza parametri
