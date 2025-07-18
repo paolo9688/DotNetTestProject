@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ConsoleApp1
 {
@@ -21,6 +22,8 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            /*
+             * Esempio di utilizzo del metodo ToReal() per vari tipi di dati.
             // string null → ""
             string sNull = null;
             Console.WriteLine($"string null -> '{sNull.ToReal()}'");
@@ -91,8 +94,9 @@ namespace ConsoleApp1
             int[] arrayVal = new int[] { 1, 2, 3 };
             var arrayValRes = arrayVal.ToReal();
             Console.WriteLine($"int[] non null -> Same instance: {ReferenceEquals(arrayVal, arrayValRes)}");
+            */
 
-            /*const string parolaChiave = "alberto";
+            const string parolaChiave = "paolo";
 
             // creo una nuova lista di utenti:
             List<Utente_Type> utenti = new List<Utente_Type>
@@ -108,6 +112,12 @@ namespace ConsoleApp1
                 new Utente_Type("Marco", "Blu", "marco.blu@email.com", "Password9!", "Via Bari 9"),
                 new Utente_Type("Francesca", "Rosa", "francesca.rosa@email.com", "Password10!", "Via Lecce 10")
             };
+
+            utenti[0].UtenteId = Guid.NewGuid();
+
+            utenti[0].Nome = "Paolo";
+
+            Console.WriteLine(utenti[0].ToReal() + "\n");
 
             // stampo la lista utenti:
             Console.WriteLine("Lista utenti:\n");
@@ -133,7 +143,26 @@ namespace ConsoleApp1
             } else
             {
                 Console.WriteLine("\nNessun utente soddisfa i criteri di ricerca.");
-            }*/
+            }
+
+            /*
+            // Serializzo la lista utenti in formato JSON:
+            string json = JsonConvert.SerializeObject(utenti, Formatting.Indented);
+            Console.WriteLine("\nLista utenti in formato JSON:");
+            Console.WriteLine(json);
+
+            // Deserializzo la lista utenti da JSON:
+            List<Utente_Type> utentiDeserializzati = JsonConvert.DeserializeObject<List<Utente_Type>>(json);
+            Console.WriteLine("\nLista utenti deserializzati:");
+            foreach (Utente_Type utente in utentiDeserializzati)
+            {
+                Console.WriteLine(utente.ToString());
+            }
+
+            // Attendo l'input dell'utente prima di chiudere la console:
+            Console.WriteLine("\nPremi un tasto per chiudere...");
+            Console.ReadKey();
+            */
         }
     }
 }
