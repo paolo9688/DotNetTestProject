@@ -1,14 +1,14 @@
-# ToReal<T>() Extension Method in C#
+# ToReal&lt;T&gt;() Extension Method in C#
 
 ## Descrizione
 
 `ToReal<T>()` è un metodo di estensione generico per oggetti in C# che assicura che un valore non sia `null`, restituendo una sua versione "reale" o predefinita. In pratica, converte un valore `null` in un valore sensato per il tipo specificato:
 
-- Per i tipi *value* (es. `int`, `bool`), se non null restituisce il valore effettivo, altrimenti restituisce il valore di default (`0`, `false`, ecc.)
-- Per i tipi *nullable* (es. `int?`, `bool?`), se non null restituisce il valore effettivo, altrimenti restituisce un'istanza di `Nullable<T>` contenente il valore di default del tipo sottostante
-- Per le stringhe (`string`), se non null restituisce il valore effettivo, altrimenti restituisce una stringa vuota `""`
-- Per gli array (`T[]`), se non null restituisce l'array attuale, altrimenti restituisce un array vuoto dello stesso tipo
-- Per le classi (*reference types*) crea una nuova istanza se è disponibile un costruttore pubblico senza parametri, altrimenti lancia un'eccezione
+- Per i tipi *value* (es. `int`, `bool`), se il valore non è null restituisce il valore stesso, altrimenti restituisce il valore di default (0, false, ecc.).
+- Per i tipi *nullable* (es. `int?`, `bool?`), se il valore non è null restituisce il valore stesso, altrimenti restituisce un’istanza di Nullable<T> contenente il valore di default del tipo sottostante.
+- Per le stringhe (`string`), se il valore non è null restituisce la stringa stessa, altrimenti restituisce una stringa vuota `""`.
+- Per gli array (`T[]`), se il valore non è null restituisce l’array stesso, altrimenti restituisce un array vuoto dello stesso tipo.
+- Per le classi (*reference types*), se esiste un costruttore pubblico senza parametri crea e restituisce una nuova istanza; altrimenti lancia un’eccezione.
 
 ## Firma
 
@@ -35,6 +35,9 @@ DateTime dataReale = data.ToReal(); // risultato: DateTime.MinValue
 
 int[] numeri = null;
 int[] arrayReale = numeri.ToReal(); // risultato: array vuoto di int
+
+Guid? guid = null;
+Guid guidReale = guid.ToReal(); // risultato: empty Guid
 ```
 
 ### Risultati dei relativi test
@@ -70,128 +73,87 @@ int[] arrayReale = numeri.ToReal(); // risultato: array vuoto di int
         "Input": null,
         "OutputLength": 0,
         "OutputJson": "[]"
+    },
+    {
+        "TestName": "ToReal_NullableGuidNull_ReturnsGuidEmpty",
+        "Input": null,
+        "Output": "00000000-0000-0000-0000-000000000000",
+        "OutputJson": "\"00000000-0000-0000-0000-000000000000\""
     }
 ]
 ```
 
-### Classi con costruttore pubblico senza parametri
+### Classe con costruttore pubblico senza parametri, istanza nulla
 
 ```csharp
-public class Persona
+public class MyClassWithDefaultCtor
 {
-    public string Nome { get; set; }
-    public int Età { get; set; }
+    public int Number { get; set; }
 
-    public Persona()
+    public MyClassWithDefaultCtor()
     {
-        Nome = "Sconosciuto";
-        Età = 0;
+        Number = 42;
     }
 }
 
-Persona p = null;
-Persona resultPersona = p.ToReal();
-// resultPersona è una nuova istanza di Persona con Nome = "Sconosciuto" e Età = 0
+MyClassWithDefaultCtor myClass = null;
+MyClassWithDefaultCtor resultMyClass = myClass.ToReal();
+// resultMyClass è una nuova istanza di MyClassWithDefaultCtor con Number = 42
 ```
 
-### Classi senza costruttore pubblico senza parametri
+### Risultato del relativo test
 
-```csharp
-public class Prodotto
-{
-    public string Nome { get; set; }
-    public decimal Prezzo { get; set; }
 
-    public Prodotto(string nome, decimal prezzo)
-    {
-        Nome = nome;
-        Prezzo = prezzo;
-    }
-}
-
-Prodotto p = null;
-try
+```json
 {
-    Prodotto resultProdotto = p.ToReal();
-}
-catch (InvalidOperationException ex)
-{
-    Console.WriteLine(ex.Message);
-    // Output: Il tipo Prodotto non ha un costruttore pubblico senza parametri.
+    "TestName": "ToReal_ClassWithDefaultCtorNull_ReturnsNewInstance",
+    "Input": null,
+    "OutputIsNull": false,
+    "Number": 42,
+    "OutputJson": "{\"Number\":42}"
 }
 ```
 
-### Classi derivate con costruttore pubblico senza parametri
+### Classe con costruttore pubblico senza parametri, istanza non nulla
 
 ```csharp
-public class Veicolo
+public class MyClassWithDefaultCtor
 {
-    public string Marca { get; set; }
+    public int Number { get; set; }
 
-    public Veicolo()
+    public MyClassWithDefaultCtor()
     {
-        Marca = "Sconosciuta";
+        Number = 42;
     }
 }
 
-public class Auto : Veicolo
-{
-    public string Modello { get; set; }
-
-    public Auto() : base()
-    {
-        Modello = "Modello base";
-    }
-}
-
-Auto a = null;
-Auto resultAuto = a.ToReal();
-// resultAuto è una nuova istanza di Auto con Marca = "Sconosciuta" e Modello = "Modello base"
+MyClassWithDefaultCtor myClass = new MyClassWithDefaultCtor();
+MyClassWithDefaultCtor resultMyClass = myClass.ToReal();
+// resultMyClass è la stessa istanza di MyClassWithDefaultCtor con Number = 42
 ```
 
-### Classi con costruttore privato (non istanziabili pubblicamente)
+### Risultato del relativo test
 
-```csharp
-public class Configurazione
+```json
 {
-    public string Nome { get; set; }
-
-    private Configurazione()
-    {
-        Nome = "Default";
-    }
-}
-
-Configurazione c = null;
-try
-{
-    Configurazione resultConfig = c.ToReal();
-}
-catch (InvalidOperationException ex)
-{
-    Console.WriteLine(ex.Message);
-    // Output: Il tipo Configurazione non ha un costruttore pubblico senza parametri.
+    "TestName": "ToReal_ClassWithDefaultCtorNotNull_ReturnsSameInstance",
+    "InputNumber": 42,
+    "OutputIsSameInstance": true,
+    "OutputJson": "{\"Number\":42}"
 }
 ```
 
-### Classi astratte o interfacce (non istanziabili)
+### Classe senza costruttore pubblico senza parametri, lancia eccezione
 
 ```csharp
-public abstract class Animale
+class MyClassWithoutDefaultCtor
 {
-    public abstract string Suono();
+    public MyClassWithoutDefaultCtor(int x) { }
 }
 
-Animale a = null;
-try
-{
-    Animale resultAnimale = a.ToReal();
-}
-catch (InvalidOperationException ex)
-{
-    Console.WriteLine(ex.Message);
-    // Output: Il tipo Animale non ha un costruttore pubblico senza parametri.
-}
+MyClassWithoutDefaultCtor myClass = null;
+MyClassWithoutDefaultCtor resultMyClass = myClass.ToReal();
+// Il tipo MyClassWithoutDefaultCtor non ha un costruttore pubblico senza parametri.
 ```
 
 # 4. Vantaggi
